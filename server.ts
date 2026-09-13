@@ -9,9 +9,6 @@ const cool = new CooL({
   applicationId: "proofchain",
 });
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
 
 const PORT = 3000;
 
