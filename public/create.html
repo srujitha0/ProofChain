@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProofChain — Create Proof</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(50,110,255,.10), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(0,220,255,.07), transparent 30%),
+        #080b12;
+      color: #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page {
+      width: min(900px, 92%);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .back {
+      color: #7f91aa;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .back:hover {
+      color: #6d9cff;
+    }
+
+    .eyebrow {
+      color: #6d9cff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin: 0 0 10px;
+      letter-spacing: -1px;
+    }
+
+    .description {
+      color: #7f91aa;
+      font-size: 14px;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background: linear-gradient(
+        145deg,
+        rgba(17,24,38,.96),
+        rgba(8,13,23,.96)
+      );
+      border: 1px solid rgba(91,125,170,.28);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+
+    label {
+      display: block;
+      color: #8d96a8;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      background: #080c14;
+      border: 1px solid #273247;
+      color: white;
+      border-radius: 9px;
+      padding: 14px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #64748b;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 15px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      background: #6d9cff;
+      color: #08101d;
+      letter-spacing: .5px;
+    }
+
+    button:hover {
+      filter: brightness(1.08);
+    }
+
+    .status {
+      margin-top: 18px;
+      color: #7f91aa;
+      font-size: 12px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <div class="top">
+      <div class="brand">PROOFCHAIN</div>
+      <a href="/" class="back">← BACK HOME</a>
+    </div>
+
+    <div class="eyebrow">CREATE AI EVIDENCE</div>
+
+    <h1>Turn an AI action into proof.</h1>
+
+    <div class="description">
+      Capture the decision and generate a cryptographic evidence receipt.
+    </div>
+
+    <div class="card">
+
+      <label for="invoice">INVOICE</label>
+      <input id="invoice" value="INV-1042">
+
+      <label for="amount">PAYMENT AMOUNT</label>
+      <input id="amount" value="1800000">
+
+      <label for="request">AI REQUEST</label>
+      <textarea id="request">Should this ₹18,00,000 invoice be approved?</textarea>
+
+      <button onclick="createProof()">
+        ANALYZE & CREATE PROOF
+      </button>
+
+      <div class="status" id="status"></div>
+
+    </div>
+
+  </main>
+
+  <script>
+    async function createProof() {
+
+      const status = document.getElementById("status");
+
+      status.textContent = "Creating cryptographic evidence...";
+
+      try {
+
+        const response = await fetch("/api/create-proof", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            invoice: document.getElementById("invoice").value,
+            amount: document.getElementById("amount").value,
+            action: "payment_approval",
+            decision: "APPROVED",
+            reasoning: "The payment meets the configured approval conditions."
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to create proof.");
+        }
+
+        sessionStorage.setItem(
+          "proofchainProof",
+          JSON.stringify(data.proof)
+        );
+
+        window.location.href = "/receipt.html";
+
+      } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "Failed to create proof: " + error.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
