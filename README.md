@@ -92,7 +92,7 @@ ProofChain captures the important AI action, creates a tamper-evident evidence r
 ProofChain/
 ├── public/
 │   └── index.html
-├── server.js
+├── server.ts
 ├── package.json
 ├── package-lock.json
 ├── .gitignore
@@ -110,7 +110,7 @@ npm install
 Start the server:
 
 ```bash
-node server.js
+node server.ts
 ```
 
 Then open:
